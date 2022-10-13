@@ -5,8 +5,13 @@
 </template>
 
 <script>
-
-export default {}
+import { registerAPI } from '@/api'
+export default {
+  async created () {
+    const res = await registerAPI()
+    console.log(res)
+  }
+}
 
 </script>
 
