@@ -1,16 +1,13 @@
 <template>
   <div>
-    <!--一级对象路由规则对象组件的挂载点-->
-    <router-view></router-view>
+    <h2>login.vue</h2>
   </div>
 </template>
 
 <script>
-
 export default {
-
+  name: 'myLogin'
 }
-
 </script>
 
 <style scoped>
