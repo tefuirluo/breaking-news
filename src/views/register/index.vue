@@ -26,9 +26,10 @@
 </template>
 
 <script>
-// 经验:
-// 前端绑定数据对象属性名, 可以直接给要调用的功能接口的参数名一致
-// 好处: 可以直接把前端对象( 带着同名的属性和前端的值 ) 发给后台
+// * 经验:
+// * 前端绑定数据对象属性名, 可以直接给要调用的功能接口的参数名一致
+// * 好处: 可以直接把前端对象( 带着同名的属性和前端的值 ) 发给后台
+import { registerAPI } from '@/api'
 
 export default {
   name: 'myRegister',
@@ -84,10 +85,21 @@ export default {
     // 注册 -> 点击事件
     registerFn () {
       // JS 兜底校验
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate(async valid => {
         if (valid) {
           // 通过校验 拿到绑定的数据
-          console.log(this.form)
+          // * 1. 调用注册接口
+          // 解构赋值, 将 axios 返回的数据对象里的 data 字段对应的值保存在 res 上
+          const { data: res } = await registerAPI(this.form)
+          console.log(res)
+          // * 2. 注册失败, 提示用户
+          // elementUI 在 vue 的原型链上添加了弹窗提示, $message 属性
+          // return: 必须阻止代码继续往下执行
+          if (res.code !== 0) return this.$message.error(res.message)
+          // * 3. 注册成功, 提示用户
+          this.$message.success(res.message)
+          // * 4. 跳转到登录页面
+          await this.$router.push('/login')
         } else {
           // 阻止默认提交行为, 表单下方红色提示会自动出现
           return false
