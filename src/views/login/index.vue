@@ -30,6 +30,7 @@
 
 <script>
 import { loginAPI } from '@/api'
+import { mapMutations } from 'vuex'
 export default {
   name: 'my-login',
   data () {
@@ -53,6 +54,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['updateToken']),
     // 登录 => 点击事件
     loginFn () {
       this.$refs.loginRef.validate(async valid => {
@@ -61,9 +63,14 @@ export default {
           // * 拿到后台真正的数据赋予给 res
           const { data: res } = await loginAPI(this.loginForm)
           // * 根据后台返回的登录提示信息, 做判断给用户提示
-          // 直接用后台返回的提示 message 值
-          if (res.code !== 0) return this.$message.error(res.message)
-          this.$message.success(res.message)
+          // * 直接用后台返回的提示 message 值
+          if (res.code !== 0) {
+            return this.$message.error(res.message)
+          } else {
+            this.$message.success(res.message)
+            // 提交给 mutations 把 token 字符串保存到 vuex 中
+            this.updateToken(res.token)
+          }
         } else {
           return false
         }
