@@ -26,9 +26,9 @@
 </template>
 
 <script>
-// * 经验:
-// * 前端绑定数据对象属性名, 可以直接给要调用的功能接口的参数名一致
-// * 好处: 可以直接把前端对象( 带着同名的属性和前端的值 ) 发给后台
+// 经验:
+// 前端绑定数据对象属性名, 可以直接给要调用的功能接口的参数名一致
+// 好处: 可以直接把前端对象( 带着同名的属性和前端的值 ) 发给后台
 
 export default {
   name: 'myRegister',
@@ -83,7 +83,16 @@ export default {
   methods: {
     // 注册 -> 点击事件
     registerFn () {
-
+      // JS 兜底校验
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          // 通过校验 拿到绑定的数据
+          console.log(this.form)
+        } else {
+          // 阻止默认提交行为, 表单下方红色提示会自动出现
+          return false
+        }
+      })
     }
   }
 }
