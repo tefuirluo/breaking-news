@@ -70,6 +70,8 @@ export default {
             this.$message.success(res.message)
             // 提交给 mutations 把 token 字符串保存到 vuex 中
             this.updateToken(res.token)
+            // 登录成功跳转到布局页
+            await this.$router.push('./')
           }
         } else {
           return false

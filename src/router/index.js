@@ -5,6 +5,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    component: () => import('@/views/layout')
+    // 默认打开直接看到布局页面
+  },
+  {
     path: '/reg',
     component: () => import('@/views/register')
     // webpack 提供 import 函数来路由懒加载导入组件
