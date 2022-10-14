@@ -64,6 +64,7 @@ export default {
         })
         // 清除 vuex
         this.$store.commit('updateToken', '')
+        this.$store.commit('updateUserInfo', {})
         // 强制跳转至登录页面
         this.$router.push('/login')
       }).catch(() => {
