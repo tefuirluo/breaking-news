@@ -36,6 +36,7 @@
         </div>
         <!--侧边栏导航 - 菜单-->
         <el-menu
+          unique-opened="true"
           default-active="/home"
           class="el-menu-vertical-demo"
           @open="handleOpen"
