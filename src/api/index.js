@@ -39,3 +39,20 @@ export const registerAPI = ({ username, password, repassword }) => {
     }
   })
 }
+
+/**
+ * 登录接口
+ * @param username  用户名
+ * @param password  密码
+ * @returns {*} Promise 对象
+ */
+export const loginAPI = ({ username, password }) => {
+  return request({
+    url: '/api/login',
+    method: 'POST',
+    data: {
+      username,
+      password
+    }
+  })
+}
