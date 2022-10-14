@@ -4,15 +4,10 @@
 </template>
 
 <script>
-// import { getUserInfoAPI } from '@/api'
 export default {
-  /* * 测试代码
-    created () {
-      getUserInfoAPI().then(res => {
-        console.log(res)
-      })
-    }
-  */
+  created () {
+    this.$store.dispatch('getUserInfoActions')
+  }
 }
 
 </script>

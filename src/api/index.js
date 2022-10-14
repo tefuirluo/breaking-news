@@ -39,14 +39,15 @@ export const loginAPI = ({ username, password }) => {
     }
   })
 }
-
+/**
+ * 请求接口
+ * @returns {*}
+ */
 export const getUserInfoAPI = () => {
   return request({
     url: '/my/userinfo',
     method: 'GET',
     headers: {
-      // ! this.$store.state.token 这里的 this 不是组件对象
-      // ! 所以不能用 this.store 拿到 store 对象
       Authorization: store.state.token
     }
   })
