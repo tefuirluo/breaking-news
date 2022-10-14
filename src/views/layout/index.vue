@@ -28,11 +28,59 @@
     <el-container>
       <!-- 侧边栏区域 -->
       <el-aside width="200px">
+        <!--侧边栏 - 用户信息区域-->
         <div class="user-box">
           <img :src="user_pic" alt="" v-if="user_pic" />
           <img src="@/assets/images/logo.png" alt="" v-else />
           <span>欢迎 {{ nickname || username }}</span>
         </div>
+        <!--侧边栏导航 - 菜单-->
+        <el-menu
+          default-active="/home"
+          class="el-menu-vertical-demo"
+          @open="handleOpen"
+          @close="handleClose"
+          background-color="#23262E"
+          text-color="#fff"
+          active-text-color="#409EFF"
+          >
+          <el-menu-item index="/home">
+            <i class="el-icon-s-home"></i>
+            <span>首页</span>
+          </el-menu-item>
+          <el-submenu index="/topic">
+            <template slot="title">
+              <i class="el-icon-s-order"></i>
+              <span>文章管理</span>
+            </template>
+            <el-menu-item index="/topic-1">
+              <i class="el-icon-s-data"></i>
+              <span>文章分类</span>
+            </el-menu-item>
+            <el-menu-item index="/topic-2">
+              <i class="el-icon-document-copy"></i>
+              <span>文章列表</span>
+            </el-menu-item>
+          </el-submenu>
+          <el-submenu index="/personal">
+            <template slot="title">
+              <i class="el-icon-user-solid"></i>
+              <span>个人中心</span>
+            </template>
+            <el-menu-item index="/personal-1">
+              <i class="el-icon-s-operation"></i>
+              <span>基本资料</span>
+            </el-menu-item>
+            <el-menu-item index="/personal-2">
+                <i class="el-icon-camera-solid"></i>
+                <span>更换头像</span>
+            </el-menu-item>
+            <el-menu-item index="/personal-3">
+                <i class="el-icon-key"></i>
+                <span>重置密码</span>
+            </el-menu-item>
+          </el-submenu>
+        </el-menu>
       </el-aside>
       <el-container>
         <!-- 页面主体区域 -->
@@ -83,6 +131,12 @@ export default {
           message: '感谢你留下来'
         })
       })
+    },
+    handleOpen (key, keyPath) {
+      console.log(key, keyPath)
+    },
+    handleClose (key, keyPath) {
+      console.log(key, keyPath)
     }
   }
 }
