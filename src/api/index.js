@@ -9,7 +9,7 @@ import store from '@/store'
  * @param username  用户名
  * @param password  密码
  * @param repassword  再次确认密码
- * @returns {*} Promise 对象
+ * @returns {Promise 对象}
  */
 export const registerAPI = ({ username, password, repassword }) => {
   return request({
@@ -27,7 +27,7 @@ export const registerAPI = ({ username, password, repassword }) => {
  * 登录接口
  * @param username  用户名
  * @param password  密码
- * @returns {*} Promise 对象
+ * @returns {Promise 对象}
  */
 export const loginAPI = ({ username, password }) => {
   return request({
@@ -39,14 +39,28 @@ export const loginAPI = ({ username, password }) => {
     }
   })
 }
+
 /**
- * 请求接口
- * @returns {*}
+ * 获取用户信息
+ * @returns { Promise 对象 }
  */
 export const getUserInfoAPI = () => {
   return request({
     url: '/my/userinfo',
     method: 'GET',
+    headers: {
+      Authorization: store.state.token
+    }
+  })
+}
+
+/**
+ * 获取侧边栏数据
+ * @returns {Promise 对象}
+ */
+export const getMenusListAPI = () => {
+  return request({
+    url: '/my/menus',
     headers: {
       Authorization: store.state.token
     }

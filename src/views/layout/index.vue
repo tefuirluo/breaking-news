@@ -36,7 +36,8 @@
         </div>
         <!--侧边栏导航 - 菜单-->
         <el-menu
-          unique-opened="true"
+          unique-opened
+          router
           default-active="/home"
           class="el-menu-vertical-demo"
           @open="handleOpen"
@@ -45,42 +46,25 @@
           text-color="#fff"
           active-text-color="#409EFF"
           >
-          <el-menu-item index="/home">
-            <i class="el-icon-s-home"></i>
-            <span>首页</span>
-          </el-menu-item>
-          <el-submenu index="/topic">
-            <template slot="title">
-              <i class="el-icon-s-order"></i>
-              <span>文章管理</span>
-            </template>
-            <el-menu-item index="/topic-1">
-              <i class="el-icon-s-data"></i>
-              <span>文章分类</span>
+          <template v-for="item in menus">
+            <!--首页-->
+            <el-menu-item v-if="!item.children" :index="item.indexPath" :key="item.indexPath">
+              <i :class="item.icon"></i>
+              <span>{{ item.title }}</span>
             </el-menu-item>
-            <el-menu-item index="/topic-2">
-              <i class="el-icon-document-copy"></i>
-              <span>文章列表</span>
-            </el-menu-item>
-          </el-submenu>
-          <el-submenu index="/personal">
-            <template slot="title">
-              <i class="el-icon-user-solid"></i>
-              <span>个人中心</span>
-            </template>
-            <el-menu-item index="/personal-1">
-              <i class="el-icon-s-operation"></i>
-              <span>基本资料</span>
-            </el-menu-item>
-            <el-menu-item index="/personal-2">
-                <i class="el-icon-camera-solid"></i>
-                <span>更换头像</span>
-            </el-menu-item>
-            <el-menu-item index="/personal-3">
-                <i class="el-icon-key"></i>
-                <span>重置密码</span>
-            </el-menu-item>
-          </el-submenu>
+            <!--下页-->
+            <el-submenu v-else :index="item.indexPath" :key="item.indexPath">
+              <template slot="title">
+                <i :class="item.icon"></i>
+                <span>{{ item.title }}</span>
+              </template>
+              <!--二级 - 子菜单-->
+              <el-menu-item v-for="obj in item.children" :index="obj.indexPath" :key="obj.indexPath">
+                <i class="obj.icon"></i>
+                <span>{{ obj.title }}</span>
+              </el-menu-item>
+            </el-submenu>
+          </template>
         </el-menu>
       </el-aside>
       <el-container>
@@ -103,8 +87,14 @@
 // 解决: @事件名.native="methods内的方法名"
 // .native 给组件内跟标签, 绑定这个原生的事件
 import { mapGetters } from 'vuex'
+import { getMenusListAPI } from '@/api'
 export default {
   name: 'my-layout',
+  data () {
+    return {
+      menus: [] // 侧边栏数据
+    }
+  },
   computed: {
     ...mapGetters(['username', 'nickname', 'user_pic'])
   },
@@ -138,7 +128,17 @@ export default {
     },
     handleClose (key, keyPath) {
       console.log(key, keyPath)
+    },
+    // 请求 => 侧边栏数据
+    async getMenuListFn () {
+      const { data: res } = await getMenusListAPI()
+      console.log(res)
+      this.menus = res.data
     }
+  },
+  created () {
+    // 请求 => 侧边栏数据
+    this.getMenuListFn()
   }
 }
 </script>
