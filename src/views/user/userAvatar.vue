@@ -5,7 +5,8 @@
     </div>
     <div>
       <!-- 图片，用来展示用户选择的头像 -->
-      <img class="the_img" src="@/assets/images/avatar.jpg" alt="" />
+      <img v-if="!avatar" class="the_img" src="@/assets/images/avatar.jpg" alt="" />
+      <img v-else :src="avatar" class="the_img" alt="">
 
       <!-- 按钮区域 -->
       <div class="btn-box">
@@ -22,7 +23,7 @@ export default {
   name: 'UserAvatar',
   data () {
     return {
-      avatar: ''
+      avatar: '' // 保存图片链接 | base64 字符串
     }
   },
   methods: {
@@ -35,7 +36,14 @@ export default {
       if (files.length === 0) {
         console.log('没有选择')
       } else {
-        console.log(files[0])
+        // 解决方案1: 内存临时地址 => url 转 链接 => 不可以发给后台
+        // this.avatar = URL.createObjectURL(files[0])
+        // 解决方案2: 转 base64
+        const fr = new FileReader()
+        fr.readAsDataURL(files[0])
+        fr.onload = (e) => {
+          this.avatar = e.target.result
+        }
       }
     }
   }
