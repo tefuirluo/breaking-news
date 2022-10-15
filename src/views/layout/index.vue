@@ -38,7 +38,7 @@
         <el-menu
           unique-opened
           router
-          default-active="/home"
+          default-active="$route.path"
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
@@ -125,10 +125,10 @@ export default {
       })
     },
     handleOpen (key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     },
     handleClose (key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     },
     // 请求 => 侧边栏数据
     async getMenuListFn () {
