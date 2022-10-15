@@ -82,3 +82,18 @@ export const updateUserInfoAPI = ({ id, username, nickname, email, user_pic }) =
     }
   })
 }
+
+/**
+ * 更新用户头像
+ * @param avatar  头像图片的 base64 字符串
+ * @returns {*} Promise 对象
+ */
+export const updateUserAvatarAPI = (avatar) => {
+  return request({
+    url: '/my/update/avatar',
+    method: 'PATCH',
+    data: {
+      avatar // 头像图片的 base64 字符串
+    }
+  })
+}
