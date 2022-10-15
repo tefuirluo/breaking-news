@@ -2,7 +2,6 @@
 // ! 注意: 每个方法只负责请求一个 url 地址
 // 引入 自定义 axios 函数
 import request from '@/utils/request'
-import store from '@/store'
 
 /**
  * 注册接口
@@ -47,10 +46,7 @@ export const loginAPI = ({ username, password }) => {
 export const getUserInfoAPI = () => {
   return request({
     url: '/my/userinfo',
-    method: 'GET',
-    headers: {
-      Authorization: store.state.token
-    }
+    method: 'GET'
   })
 }
 
@@ -60,9 +56,6 @@ export const getUserInfoAPI = () => {
  */
 export const getMenusListAPI = () => {
   return request({
-    url: '/my/menus',
-    headers: {
-      Authorization: store.state.token
-    }
+    url: '/my/menus'
   })
 }

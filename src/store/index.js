@@ -31,7 +31,6 @@ export default new Vuex.Store({
     // 请求 => 用户信息
     async getUserInfoActions (store) {
       const res = await getUserInfoAPI()
-      console.log(res)
       store.commit('updateUserInfo', res.data.data)
     }
   },
