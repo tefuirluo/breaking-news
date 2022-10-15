@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { getArtCateListAPI } from '@/api'
+import { getArtCateListAPI, saveArtCateAPI } from '@/api'
 export default {
   name: 'ArtCate',
   created () {
@@ -81,11 +81,24 @@ export default {
     addCateShowDialogBtnFn () {
       this.dialogVisible = true
     },
+    // 取消按钮 => 点击事件
     cancelFn () {
       this.dialogVisible = false
     },
+    // 确定按钮 => 点击事件
     confirmFn () {
       this.dialogVisible = false
+      this.$refs.addRef.validate(async valid => {
+        if (valid) {
+          // 通过校验
+          const { data: res } = await saveArtCateAPI(this.addForm)
+          if (res.code !== 0) return this.$message.error(res.message)
+          this.$message.success(res.message)
+          this.getArtCateFn()
+        } else {
+          return false
+        }
+      })
     },
     dialogCloseFn () {
       this.$refs.addRef.resetFields()
