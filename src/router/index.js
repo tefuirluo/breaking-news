@@ -28,13 +28,25 @@ const router = new VueRouter({
 })
 
 // 全局前置路由守卫
+// 浏览器第一次打开页面, 会触发一次全局前置路由守卫
+// 有 token 就证明登陆了, 没有 token 就代表没有登录
+const whiteList = ['/login', '/reg']
 router.beforeEach((to, from, next) => {
   const token = store.state.token
-  if (token && !store.state.userInfo.username) {
-    // 本地有 token值, 才去请求用户信息
-    store.dispatch('getUserInfoActions')
+  if (token) {
+    // 登录了
+    if (!store.state.userInfo.username) {
+      // 本地有 token值, 才去请求用户信息
+      store.dispatch('getUserInfoActions')
+    }
+    next()
+  } else {
+    if (whiteList.includes(to.path)) {
+      next()
+    } else {
+      next('/login')
+    }
   }
-  next()
 })
 
 export default router
