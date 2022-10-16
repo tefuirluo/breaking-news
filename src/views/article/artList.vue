@@ -112,6 +112,26 @@
       >
       </el-pagination>
     </el-card>
+    <!-- 查看文章详情的对话框 -->
+    <el-dialog title="文章预览" :visible.sync="detailVisible" width="80%">
+      <h1 class="title">{{ artDetail.title }}</h1>
+
+      <div class="info">
+        <span>作者：{{ artDetail.nickname || artDetail.username }}</span>
+        <span>发布时间：{{ artDetail.pub_date }}</span>
+        <span>所属分类：{{ artDetail.cate_name }}</span>
+        <span>状态：{{ artDetail.state }}</span>
+      </div>
+
+      <!-- 分割线 -->
+      <el-divider></el-divider>
+
+      <!-- 文章的封面 -->
+      <img alt=""/>
+
+      <!-- 文章的详情 -->
+      <div v-html="artDetail.content" class="detail-box"></div>
+    </el-dialog>
   </div>
 </template>
 
@@ -154,7 +174,9 @@ export default {
       },
       cateList: [], // 保存文章分类列表
       artList: [], // 保存文章列表
-      total: 0 // 保存现有文章总数
+      total: 0, // 保存现有文章总数
+      detailVisible: false, // 用于查看文章详情的对话框 => 显示 / 隐藏
+      artDetail: {} // 保存文章详情
     }
   },
   created () {
@@ -282,9 +304,10 @@ export default {
 
     // 文章标题点击事件 => 查看详情
     async showDetailFn (artId) {
+      this.detailVisible = true // 让详情对话框出现
       // artId => 文章 id
       const { data: res } = await getArtDetailAPI(artId)
-      console.log(res)
+      this.artDetail = res.data
     }
   }
 }
@@ -314,5 +337,26 @@ export default {
   }
   .el-pagination {
     margin-top: 15px;
+  }
+
+  .title {
+    font-size: 24px;
+    text-align: center;
+    font-weight: normal;
+    color: #000;
+    margin: 0 0 10px 0;
+  }
+  .info {
+    font-size: 12px;
+    span {
+      margin-right: 20px;
+    }
+  }
+
+  // 修改 dialog 内部元素的样式，需要添加样式穿透
+  ::v-deep .detail-box {
+    img {
+      width: 500px;
+    }
   }
 </style>
