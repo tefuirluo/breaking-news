@@ -86,7 +86,11 @@
 
       <!-- 文章表格区域 -->
       <el-table :data="artList" style="width: 100%;" border stripe>
-        <el-table-column label="文章标题" prop="title"></el-table-column>
+        <el-table-column label="文章标题">
+          <template v-slot="{ row }">
+            <el-link type="primary" @click="showDetailFn(row.id)">{{ row.title }}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column label="分类" prop="cate_name"></el-table-column>
         <el-table-column label="发表时间" prop="pub_date">
           <template v-slot="scope">
@@ -112,7 +116,7 @@
 </template>
 
 <script>
-import { getArtCateListAPI, uploadArticleAPI, getArtListAPI } from '@/api'
+import { getArtCateListAPI, uploadArticleAPI, getArtListAPI, getArtDetailAPI } from '@/api'
 import imgObj from '@/assets/images/cover.jpg'
 export default {
   name: 'ArtList',
@@ -274,6 +278,13 @@ export default {
       this.q.cate_id = ''
       this.q.state = ''
       this.getArticleListFn()
+    },
+
+    // 文章标题点击事件 => 查看详情
+    async showDetailFn (artId) {
+      // artId => 文章 id
+      const { data: res } = await getArtDetailAPI(artId)
+      console.log(res)
     }
   }
 }
