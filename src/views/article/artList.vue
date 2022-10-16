@@ -23,8 +23,8 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small">筛选</el-button>
-            <el-button type="info" size="small">重置</el-button>
+            <el-button type="primary" size="small" @click="choseFn">筛选</el-button>
+            <el-button type="info" size="small" @click="resetFn">重置</el-button>
           </el-form-item>
         </el-form>
         <!-- 发表文章的 Dialog 对话框 -->
@@ -77,7 +77,11 @@
           </el-form>
         </el-dialog>
         <!-- 发表文章的按钮 -->
-        <el-button type="primary" size="small" class="btn-pub" @click="showPubDialogFn">发表文章</el-button>
+        <el-button type="primary"
+                   size="small"
+                   class="btn-pub"
+                   @click="showPubDialogFn"
+        >发表文章</el-button>
       </div>
 
       <!-- 文章表格区域 -->
@@ -252,6 +256,22 @@ export default {
     // 分页 => 当前页码改变 触发
     handleCurrentChangeFn (nowPage) {
       this.q.pagenum = nowPage
+      this.getArticleListFn()
+    },
+
+    // 筛选按钮 => 点击事件
+    choseFn () {
+      this.q.pagenum = 1
+      this.q.pagesize = 2
+      this.getArticleListFn()
+    },
+
+    // 重置按钮 => 点击事件
+    resetFn () {
+      this.q.pagenum = 1
+      this.q.pagesize = 8
+      this.q.cate_id = ''
+      this.q.state = ''
       this.getArticleListFn()
     }
   }
