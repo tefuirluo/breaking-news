@@ -39,15 +39,15 @@
                 <el-option v-for="obj in cateList"
                            :key="obj.id"
                            :label="obj.cate_name"
-                           :value="obj.cate_alias">
+                           :value="obj.id">
                 </el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="文章内容" prop="content">
-              <quill-editor v-model="pubForm.content" ref="myQuillEditor">
+              <quill-editor v-model="pubForm.content" ref="myQuillEditor" @change="contentChangeFn">
               </quill-editor>
             </el-form-item>
-            <el-form-item label="文章封面">
+            <el-form-item label="文章封面" prop="cover_img">
               <!-- 用来显示封面的图片 -->
               <img src="@/assets/images/cover.jpg"
                    alt=""
@@ -110,10 +110,13 @@ export default {
           { min: 1, max: 30, message: '文章标题的长度为1-30个字符', trigger: 'blur' }
         ],
         cate_id: [
-          { required: true, message: '请选择文章标题', trigger: 'blur' }
+          { required: true, message: '请选择文章标题', trigger: 'change' }
         ],
         content: [
           { required: true, message: '请输入文章内容', trigger: 'blur' }
+        ],
+        cover_img: [
+          { required: true, message: '请插入封面', trigger: 'change' }
         ]
       },
       cateList: [] // 保存文章分类列表
@@ -161,11 +164,22 @@ export default {
         const url = URL.createObjectURL(files[0])
         this.$refs.imgRef.setAttribute('src', url)
       }
+      this.$refs.pubFormRef.validateField('cover_img')
     },
     // 表单内部 => 点击 => 发布 + 存为草稿 => 按钮点击事件
     pubArticleFn (str) {
       this.pubForm.state = str
-      console.log(this.pubForm)
+      this.$refs.pubFormRef.validate(async vaild => {
+        if (vaild) {
+          console.log(this.pubForm)
+        } else {
+          return false
+        }
+      })
+    },
+    // 富文本编辑器内容改变出发此事件方法
+    contentChangeFn () {
+      this.$refs.pubFormRef.validateField('content')
     }
   }
 }
