@@ -16,7 +16,7 @@
           <!--scope => row 属性 => 行对象-->
           <template v-slot="scope">
             <el-button type="primary" size="mini" @click="updateCateBtnFn(scope.row)">修改</el-button>
-            <el-button type="danger" size="mini">删除</el-button>
+            <el-button type="danger" size="mini" @click="delCateFn(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { getArtCateListAPI, saveArtCateAPI, updateArtCateAPI } from '@/api'
+import { delArtCartAPI, getArtCateListAPI, saveArtCateAPI, updateArtCateAPI } from '@/api'
 export default {
   name: 'ArtCate',
   created () {
@@ -117,6 +117,7 @@ export default {
         }
       })
     },
+    // 取消按钮 => 点击事件
     dialogCloseFn () {
       this.$refs.addRef.resetFields()
     },
@@ -132,6 +133,14 @@ export default {
         this.addForm.cate_name = obj.cate_name
         this.addForm.cate_alias = obj.cate_alias
       })
+    },
+    // 修改分类 => 按钮的删除
+    async delCateFn (obj) {
+      const { data: res } = await delArtCartAPI(obj.id)
+      if (res.code !== 0) return this.$message.error(res.message)
+      this.$message.success(res.message)
+      // 删除后重新获取最新的列表
+      this.getArtCateFn()
     }
   }
 }
