@@ -81,6 +81,13 @@
       </div>
 
       <!-- 文章表格区域 -->
+      <el-table :data="artList" style="width: 100%;" border stripe>
+        <el-table-column label="文章标题" prop="title"></el-table-column>
+        <el-table-column label="分类" prop="cate_name"></el-table-column>
+        <el-table-column label="发表时间" prop="pub_date"></el-table-column>
+        <el-table-column label="状态" prop="state"></el-table-column>
+        <el-table-column label="操作"></el-table-column>
+      </el-table>
 
       <!-- 分页区域 -->
     </el-card>
@@ -88,7 +95,7 @@
 </template>
 
 <script>
-import { getArtCateListAPI, uploadArticleAPI } from '@/api'
+import { getArtCateListAPI, uploadArticleAPI, getArtListAPI } from '@/api'
 import imgObj from '@/assets/images/cover.jpg'
 export default {
   name: 'ArtList',
@@ -124,18 +131,36 @@ export default {
           { required: true, message: '请插入封面', trigger: 'change' }
         ]
       },
-      cateList: [] // 保存文章分类列表
+      cateList: [], // 保存文章分类列表
+      artList: [], // 保存文章列表
+      total: 0 // 保存现有文章总数
     }
   },
   created () {
     // 请求分类的数据
     this.getCateListFn()
+    // 请求文章列表
+    this.getArticleListFn()
   },
   methods: {
+    // 获取所有分类
+    async getCateListFn () {
+      const { data: res } = await getArtCateListAPI()
+      this.cateList = res.data
+    },
+
+    // 获取 => 所有文章列表
+    async getArticleListFn () {
+      const { data: res } = await getArtListAPI(this.q)
+      this.artList = res.data // 保存当前获取的文章列表 => 有分页 不是所有数据
+      this.total = res.total // 保存总数
+    },
+
     // 发表文章按钮->点击事件->让添加文章对话框出现
     showPubDialogFn () {
       this.pubDialogVisible = true
     },
+
     // 对话框关闭前的回调
     async handleClose (done) { // done 的作用: 调用才会放行让对话框关闭
       // 询问用户是否确认关闭对话框
@@ -149,15 +174,12 @@ export default {
       // 确认关闭
       done()
     },
-    // 获取所有分类
-    async getCateListFn () {
-      const { data: res } = await getArtCateListAPI()
-      this.cateList = res.data
-    },
+
     // 选择封面点击事件 => 让文件选择窗口出现
     selCoverFn () {
       this.$refs.iptFileRef.click() // 用 JS 代码模拟点击事件
     },
+
     // 用户选择了封面文件
     changeCoverFn (e) {
       const files = e.target.files
@@ -171,6 +193,7 @@ export default {
       }
       this.$refs.pubFormRef.validateField('cover_img')
     },
+
     // 表单内部 => 点击 => 发布 + 存为草稿 => 按钮点击事件
     pubArticleFn (str) {
       this.pubForm.state = str
@@ -187,15 +210,19 @@ export default {
           this.$message.success('发布文章成功！')
           // 关闭对话框
           this.pubDialogVisible = false
+          // 刷新文章列表 => 再次请求文章列表数据
+          this.getArticleListFn()
         } else {
           return false
         }
       })
     },
+
     // 富文本编辑器内容改变出发此事件方法
     contentChangeFn () {
       this.$refs.pubFormRef.validateField('content')
     },
+
     // 新增文章 => 对话框关闭时 => 清空表单
     dialogCloseFn () {
       this.$refs.pubFormRef.resetFields()

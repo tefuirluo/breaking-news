@@ -189,3 +189,24 @@ export const uploadArticleAPI = (fd) => {
     data: fd
   })
 }
+
+/**
+ * 获取 => 文章列表
+ * @param pagenum 当前页码数
+ * @param pagesize  当前页需要的数据条数
+ * @param cate_id 文章分类 id
+ * @param state 文章状态
+ * @returns {*} Promise 对象
+ */
+export const getArtListAPI = ({ pagenum, pagesize, cate_id, state }) => {
+  return request({
+    url: '/my/article/list',
+    method: 'GET',
+    params: {
+      pagenum,
+      pagesize,
+      cate_id,
+      state
+    }
+  })
+}
