@@ -9,8 +9,11 @@
         <el-form :inline="true" :model="q">
           <el-form-item label="文章分类">
             <el-select v-model="q.cate_id" placeholder="请选择分类" size="small">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+              <el-option v-for="obj in cateList"
+                         :key="obj.id"
+                         :label="obj.cate_name"
+                         :value="obj.cate_alias">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="发布状态" style="margin-left: 15px;">
@@ -26,7 +29,21 @@
         </el-form>
         <!-- 发表文章的 Dialog 对话框 -->
         <el-dialog title="发表文章" :visible.sync="pubDialogVisible" fullscreen :before-close="handleClose">
-          <span>这是一段信息</span>
+          <!-- 发布文章的对话框 -->
+          <el-form :model="pubForm" :rules="pubFormRules" ref="pubFormRef" label-width="100px">
+            <el-form-item label="文章标题" prop="title">
+              <el-input v-model="pubForm.title" placeholder="请输入标题"></el-input>
+            </el-form-item>
+            <el-form-item label="文章分类" prop="cate_id">
+              <el-select v-model="pubForm.cate_id" placeholder="请选择分类" style="width: 100%;">
+                <el-option v-for="obj in cateList"
+                           :key="obj.id"
+                           :label="obj.cate_name"
+                           :value="obj.cate_alias">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
         </el-dialog>
         <!-- 发表文章的按钮 -->
         <el-button type="primary" size="small" class="btn-pub" @click="showPubDialogFn">发表文章</el-button>
@@ -40,6 +57,7 @@
 </template>
 
 <script>
+import { getArtCateListAPI } from '@/api'
 export default {
   name: 'ArtList',
   data () {
@@ -51,8 +69,24 @@ export default {
         cate_id: '',
         state: ''
       },
-      pubDialogVisible: false // 控制发表文章对话框的显示与隐藏
+      pubDialogVisible: false, // 控制发表文章对话框的显示与隐藏
+      pubForm: { // 发布文章 => 表单的数据对象
+        title: '',
+        cate_id: ''
+      },
+      pubFormRules: { // 发布文章 => 表单的验证规则对象
+        title: [
+          { required: true, message: '请输入文章标题', trigger: 'blur' },
+          { min: 1, max: 30, message: '文章标题的长度为1-30个字符', trigger: 'blur' }
+        ],
+        cate_id: [{ required: true, message: '请选择文章标题', trigger: 'blur' }]
+      },
+      cateList: [] // 保存文章分类列表
     }
+  },
+  created () {
+    // 请求分类的数据
+    this.getCateListFn()
   },
   methods: {
     // 发表文章按钮->点击事件->让添加文章对话框出现
@@ -67,11 +101,15 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).catch(err => err)
-      
       // 取消了关闭-阻止住, 什么都不干
       if (confirmResult === 'cancel') return
       // 确认关闭
       done()
+    },
+    // 获取所有分类
+    async getCateListFn () {
+      const { data: res } = await getArtCateListAPI()
+      this.cateList = res.data
     }
   }
 }
