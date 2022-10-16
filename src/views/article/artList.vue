@@ -49,7 +49,11 @@
             </el-form-item>
             <el-form-item label="文章封面">
               <!-- 用来显示封面的图片 -->
-              <img src="../../assets/images/cover.jpg" alt="" class="cover-img" ref="imgRef" />
+              <img src="@/assets/images/cover.jpg"
+                   alt=""
+                   class="cover-img"
+                   ref="imgRef"
+              />
               <br />
               <!-- 文件选择框，默认被隐藏 -->
               <input type="file"
@@ -76,6 +80,7 @@
 
 <script>
 import { getArtCateListAPI } from '@/api'
+import imgObj from '@/assets/images/cover.jpg'
 export default {
   name: 'ArtList',
   data () {
@@ -145,8 +150,11 @@ export default {
       const files = e.target.files
       if (files.length === 0) {
         this.pubForm.cover_img = null
+        this.$refs.imgRef.setAttribute('src', imgObj)
       } else {
         this.pubForm.cover_img = files[0]
+        const url = URL.createObjectURL(files[0])
+        this.$refs.imgRef.setAttribute('src', url)
       }
     }
   }
