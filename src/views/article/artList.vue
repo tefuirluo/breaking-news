@@ -92,8 +92,17 @@
         <el-table-column label="状态" prop="state"></el-table-column>
         <el-table-column label="操作"></el-table-column>
       </el-table>
-
       <!-- 分页区域 -->
+      <el-pagination
+        @size-change="handleSizeChangeFn"
+        @current-change="handleCurrentChangeFn"
+        :current-page.sync="q.pagenum"
+        :page-sizes="[2, 3, 5, 8, 10]"
+        :page-size.sync="q.pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
     </el-card>
   </div>
 </template>
@@ -108,7 +117,7 @@ export default {
       // 查询参数对象
       q: {
         pagenum: 1,
-        pagesize: 9,
+        pagesize: 8,
         cate_id: '',
         state: ''
       },
@@ -231,6 +240,19 @@ export default {
     dialogCloseFn () {
       this.$refs.pubFormRef.resetFields()
       this.$refs.imgRef.setAttribute('src', imgObj)
+    },
+
+    // 分页 => 每页条数改变 触发
+    handleSizeChangeFn (sizes) {
+      // sizes => 当前需要每页显示的条数
+      this.q.pagesize = sizes
+      this.getArticleListFn()
+    },
+
+    // 分页 => 当前页码改变 触发
+    handleCurrentChangeFn (nowPage) {
+      this.q.pagenum = nowPage
+      this.getArticleListFn()
     }
   }
 }
@@ -257,5 +279,8 @@ export default {
     width: 400px;
     height: 280px;
     object-fit: cover;
+  }
+  .el-pagination {
+    margin-top: 15px;
   }
 </style>
