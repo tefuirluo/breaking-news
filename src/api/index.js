@@ -176,3 +176,16 @@ export const delArtCartAPI = (id) => {
     }
   })
 }
+
+/**
+ * 发布文章
+ * @param fd  Form data objects
+ * @returns {*} Promise 对象
+ */
+export const uploadArticleAPI = (fd) => {
+  return request({
+    url: '/my/article/add',
+    method: 'POST',
+    data: fd
+  })
+}

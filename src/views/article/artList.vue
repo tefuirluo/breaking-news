@@ -28,7 +28,12 @@
           </el-form-item>
         </el-form>
         <!-- 发表文章的 Dialog 对话框 -->
-        <el-dialog title="发表文章" :visible.sync="pubDialogVisible" fullscreen :before-close="handleClose">
+        <el-dialog title="发表文章"
+                   :visible.sync="pubDialogVisible"
+                   fullscreen
+                   :before-close="handleClose"
+                   @close="dialogCloseFn"
+        >
           <!-- 发布文章的对话框 -->
           <el-form :model="pubForm" :rules="pubFormRules" ref="pubFormRef" label-width="100px">
             <el-form-item label="文章标题" prop="title">
@@ -44,7 +49,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="文章内容" prop="content">
-              <quill-editor v-model="pubForm.content" ref="myQuillEditor" @change="contentChangeFn">
+              <quill-editor v-model="pubForm.content" ref="myQuillEditor" @blur="contentChangeFn">
               </quill-editor>
             </el-form-item>
             <el-form-item label="文章封面" prop="cover_img">
@@ -83,7 +88,7 @@
 </template>
 
 <script>
-import { getArtCateListAPI } from '@/api'
+import { getArtCateListAPI, uploadArticleAPI } from '@/api'
 import imgObj from '@/assets/images/cover.jpg'
 export default {
   name: 'ArtList',
@@ -171,7 +176,17 @@ export default {
       this.pubForm.state = str
       this.$refs.pubFormRef.validate(async vaild => {
         if (vaild) {
-          console.log(this.pubForm)
+          const fd = new FormData()
+          fd.append('title', this.pubForm.title)
+          fd.append('cate_id', this.pubForm.cate_id)
+          fd.append('content', this.pubForm.content)
+          fd.append('cover_img', this.pubForm.cover_img)
+          fd.append('state', this.pubForm.state)
+          const { data: res } = await uploadArticleAPI(fd)
+          if (res.code !== 0) return this.$message.error('发布文章失败！')
+          this.$message.success('发布文章成功！')
+          // 关闭对话框
+          this.pubDialogVisible = false
         } else {
           return false
         }
@@ -180,6 +195,11 @@ export default {
     // 富文本编辑器内容改变出发此事件方法
     contentChangeFn () {
       this.$refs.pubFormRef.validateField('content')
+    },
+    // 新增文章 => 对话框关闭时 => 清空表单
+    dialogCloseFn () {
+      this.$refs.pubFormRef.resetFields()
+      this.$refs.imgRef.setAttribute('src', imgObj)
     }
   }
 }
