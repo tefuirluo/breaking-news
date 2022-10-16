@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { getArtCateListAPI, saveArtCateAPI } from '@/api'
+import { getArtCateListAPI, saveArtCateAPI, updateArtCateAPI } from '@/api'
 export default {
   name: 'ArtCate',
   created () {
@@ -70,7 +70,9 @@ export default {
           { required: true, message: '请输入分类别名', trigger: 'blur' },
           { pattern: /^[a-zA-Z0-9]{1,15}$/, message: '分类别名必须是1-15位的字母数字', trigger: 'blur' }
         ]
-      }
+      },
+      isEdit: false, // true 为编辑状态, false 为新增状态
+      editId: '' // 用于保存正在编辑的数据 id 值
     }
   },
   methods: {
@@ -82,6 +84,8 @@ export default {
     },
     // 添加分类按钮 => 点击事件 => 对话框出现
     addCateShowDialogBtnFn () {
+      this.isEdit = false
+      this.editId = ''
       this.dialogVisible = true
     },
     // 取消按钮 => 点击事件
@@ -94,10 +98,20 @@ export default {
       this.$refs.addRef.validate(async valid => {
         if (valid) {
           // 通过校验
-          const { data: res } = await saveArtCateAPI(this.addForm)
-          if (res.code !== 0) return this.$message.error(res.message)
-          this.$message.success(res.message)
+          if (this.isEdit) {
+            // 要修改
+            // this.addForm.id = this.editId // 把要编辑的文章分类的 id 添加到对象上
+            const { data: res } = await updateArtCateAPI({ id: this.editId, ...this.addForm })
+            if (res.code !== 0) return this.$message.error(res.message)
+            this.$message.success(res.message)
+          } else {
+            // 要新增
+            const { data: res } = await saveArtCateAPI(this.addForm)
+            if (res.code !== 0) return this.$message.error(res.message)
+            this.$message.success(res.message)
+          }
           this.getArtCateFn()
+          this.dialogVisible = false
         } else {
           return false
         }
@@ -110,6 +124,8 @@ export default {
     updateCateBtnFn (obj) {
       // obj 的值 { id, cate_name, cate_alias}
       // console.log(obj)
+      this.isEdit = true
+      this.editId = obj.id
       this.dialogVisible = true
       // 数据回显
       this.addForm.cate_name = obj.cate_name
