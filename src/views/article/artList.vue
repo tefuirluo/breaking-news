@@ -250,6 +250,7 @@ export default {
     handleSizeChangeFn (sizes) {
       // sizes => 当前需要每页显示的条数
       this.q.pagesize = sizes
+      this.q.pagenum = 1
       this.getArticleListFn()
     },
 
