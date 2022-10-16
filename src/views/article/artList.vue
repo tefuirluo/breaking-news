@@ -65,6 +65,10 @@
               <!-- 选择封面的按钮 -->
               <el-button type="text" @click="selCoverFn">+ 选择封面</el-button>
             </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="pubArticleFn('已发布')">发布</el-button>
+              <el-button type="info" @click="pubArticleFn('草稿')">存为草稿</el-button>
+            </el-form-item>
           </el-form>
         </el-dialog>
         <!-- 发表文章的按钮 -->
@@ -97,7 +101,8 @@ export default {
         title: '', // 文章标题
         cate_id: '', // 文章分类 id
         content: '', // 文章内容
-        cover_img: null // 用户选择的封面图片 => 默认为 null
+        cover_img: null, // 用户选择的封面图片 => 默认为 null
+        state: '' // 文章状态-只能是"已发布"和"草稿"2个字符串
       },
       pubFormRules: { // 发布文章 => 表单的验证规则对象
         title: [
@@ -156,6 +161,11 @@ export default {
         const url = URL.createObjectURL(files[0])
         this.$refs.imgRef.setAttribute('src', url)
       }
+    },
+    // 表单内部 => 点击 => 发布 + 存为草稿 => 按钮点击事件
+    pubArticleFn (str) {
+      this.pubForm.state = str
+      console.log(this.pubForm)
     }
   }
 }
