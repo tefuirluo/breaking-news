@@ -128,8 +128,10 @@ export default {
       this.editId = obj.id
       this.dialogVisible = true
       // 数据回显
-      this.addForm.cate_name = obj.cate_name
-      this.addForm.cate_alias = obj.cate_alias
+      this.$nextTick(() => {
+        this.addForm.cate_name = obj.cate_name
+        this.addForm.cate_alias = obj.cate_alias
+      })
     }
   }
 }
