@@ -13,8 +13,11 @@
         <el-table-column prop="cate_name" label="分类名称"></el-table-column>
         <el-table-column prop="cate_alias" label="分类别名"></el-table-column>
         <el-table-column label="操作">
-          <el-button type="primary" size="mini">修改</el-button>
-          <el-button type="danger" size="mini">删除</el-button>
+          <!--scope => row 属性 => 行对象-->
+          <template v-slot="scope">
+            <el-button type="primary" size="mini" @click="updateCateBtnFn(scope.row)">修改</el-button>
+            <el-button type="danger" size="mini">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
     </el-card>
@@ -74,7 +77,7 @@ export default {
     // 获取文章分类列表
     async getArtCateFn () {
       const res = await getArtCateListAPI()
-      console.log(res)
+      // console.log(res)
       this.cateList = res.data.data
     },
     // 添加分类按钮 => 点击事件 => 对话框出现
@@ -102,6 +105,15 @@ export default {
     },
     dialogCloseFn () {
       this.$refs.addRef.resetFields()
+    },
+    // 修改分类 => 按钮的点击回显
+    updateCateBtnFn (obj) {
+      // obj 的值 { id, cate_name, cate_alias}
+      // console.log(obj)
+      this.dialogVisible = true
+      // 数据回显
+      this.addForm.cate_name = obj.cate_name
+      this.addForm.cate_alias = obj.cate_alias
     }
   }
 }
