@@ -118,7 +118,7 @@
 
       <div class="info">
         <span>作者：{{ artDetail.nickname || artDetail.username }}</span>
-        <span>发布时间：{{ artDetail.pub_date }}</span>
+        <span>发布时间：{{ $formatDate(artDetail.pub_date) }}</span>
         <span>所属分类：{{ artDetail.cate_name }}</span>
         <span>状态：{{ artDetail.state }}</span>
       </div>
@@ -127,7 +127,7 @@
       <el-divider></el-divider>
 
       <!-- 文章的封面 -->
-      <img alt=""/>
+      <img :src="baseURL + artDetail.cover_img" alt="" />
 
       <!-- 文章的详情 -->
       <div v-html="artDetail.content" class="detail-box"></div>
@@ -137,6 +137,8 @@
 
 <script>
 import { getArtCateListAPI, uploadArticleAPI, getArtListAPI, getArtDetailAPI } from '@/api'
+import { baseURL } from '@/utils/request'
+// webpack 会把图片变为一个 base64 字符串 / 在打包后的图片临时地址
 import imgObj from '@/assets/images/cover.jpg'
 export default {
   name: 'ArtList',
@@ -176,7 +178,8 @@ export default {
       artList: [], // 保存文章列表
       total: 0, // 保存现有文章总数
       detailVisible: false, // 用于查看文章详情的对话框 => 显示 / 隐藏
-      artDetail: {} // 保存文章详情
+      artDetail: {}, // 保存文章详情
+      baseURL
     }
   },
   created () {

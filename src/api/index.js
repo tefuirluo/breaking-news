@@ -219,7 +219,6 @@ export const getArtListAPI = ({ pagenum, pagesize, cate_id, state }) => {
 export const getArtDetailAPI = (id) => {
   return request({
     url: '/my/article/info',
-    method: 'GET',
     params: {
       id
     }
