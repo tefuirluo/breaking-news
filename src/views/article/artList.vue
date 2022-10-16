@@ -47,6 +47,20 @@
               <quill-editor v-model="pubForm.content" ref="myQuillEditor">
               </quill-editor>
             </el-form-item>
+            <el-form-item label="文章封面">
+              <!-- 用来显示封面的图片 -->
+              <img src="../../assets/images/cover.jpg" alt="" class="cover-img" ref="imgRef" />
+              <br />
+              <!-- 文件选择框，默认被隐藏 -->
+              <input type="file"
+                     style="display: none;"
+                     accept="image/*"
+                     ref="iptFileRef"
+                     @change="changeCoverFn"
+              />
+              <!-- 选择封面的按钮 -->
+              <el-button type="text" @click="selCoverFn">+ 选择封面</el-button>
+            </el-form-item>
           </el-form>
         </el-dialog>
         <!-- 发表文章的按钮 -->
@@ -77,7 +91,8 @@ export default {
       pubForm: { // 发布文章 => 表单的数据对象
         title: '', // 文章标题
         cate_id: '', // 文章分类 id
-        content: '' // 文章内容
+        content: '', // 文章内容
+        cover_img: null // 用户选择的封面图片 => 默认为 null
       },
       pubFormRules: { // 发布文章 => 表单的验证规则对象
         title: [
@@ -120,6 +135,19 @@ export default {
     async getCateListFn () {
       const { data: res } = await getArtCateListAPI()
       this.cateList = res.data
+    },
+    // 选择封面点击事件 => 让文件选择窗口出现
+    selCoverFn () {
+      this.$refs.iptFileRef.click() // 用 JS 代码模拟点击事件
+    },
+    // 用户选择了封面文件
+    changeCoverFn (e) {
+      const files = e.target.files
+      if (files.length === 0) {
+        this.pubForm.cover_img = null
+      } else {
+        this.pubForm.cover_img = files[0]
+      }
     }
   }
 }
@@ -140,5 +168,11 @@ export default {
   // [data-v-hash] .ql-editor 这样就能选中组件内的标签的class类名了
   ::v-deep .ql-editor {
     min-height: 300px;
+  }
+  // 设置图片的宽高
+  .cover-img {
+    width: 400px;
+    height: 280px;
+    object-fit: cover;
   }
 </style>
