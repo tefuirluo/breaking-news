@@ -84,7 +84,11 @@
       <el-table :data="artList" style="width: 100%;" border stripe>
         <el-table-column label="文章标题" prop="title"></el-table-column>
         <el-table-column label="分类" prop="cate_name"></el-table-column>
-        <el-table-column label="发表时间" prop="pub_date"></el-table-column>
+        <el-table-column label="发表时间" prop="pub_date">
+          <template v-slot="scope">
+            <span> {{ $formatDate(scope.row.pub_date) }} </span>
+          </template>
+        </el-table-column>
         <el-table-column label="状态" prop="state"></el-table-column>
         <el-table-column label="操作"></el-table-column>
       </el-table>
@@ -104,7 +108,7 @@ export default {
       // 查询参数对象
       q: {
         pagenum: 1,
-        pagesize: 2,
+        pagesize: 9,
         cate_id: '',
         state: ''
       },
