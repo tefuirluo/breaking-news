@@ -224,3 +224,18 @@ export const getArtDetailAPI = (id) => {
     }
   })
 }
+
+/**
+ * 删除 => 文章
+ * @param id  文章 id
+ * @returns {*} Promise 对象
+ */
+export const delArticleAPI = (id) => {
+  return request({
+    url: '/my/article/info',
+    method: 'DELETE',
+    params: {
+      id
+    }
+  })
+}

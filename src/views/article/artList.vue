@@ -98,7 +98,11 @@
           </template>
         </el-table-column>
         <el-table-column label="状态" prop="state"></el-table-column>
-        <el-table-column label="操作"></el-table-column>
+        <el-table-column label="操作">
+          <template v-slot="{ row }">
+            <el-button type="danger" size="mini" @click="removeFn(row.id)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <!-- 分页区域 -->
       <el-pagination
@@ -136,7 +140,7 @@
 </template>
 
 <script>
-import { getArtCateListAPI, uploadArticleAPI, getArtListAPI, getArtDetailAPI } from '@/api'
+import { getArtCateListAPI, uploadArticleAPI, getArtListAPI, getArtDetailAPI, delArticleAPI } from '@/api'
 import { baseURL } from '@/utils/request'
 // webpack 会把图片变为一个 base64 字符串 / 在打包后的图片临时地址
 import imgObj from '@/assets/images/cover.jpg'
@@ -147,7 +151,7 @@ export default {
       // 查询参数对象
       q: {
         pagenum: 1,
-        pagesize: 8,
+        pagesize: 5,
         cate_id: '',
         state: ''
       },
@@ -299,7 +303,7 @@ export default {
     // 重置按钮 => 点击事件
     resetFn () {
       this.q.pagenum = 1
-      this.q.pagesize = 8
+      this.q.pagesize = 5
       this.q.cate_id = ''
       this.q.state = ''
       this.getArticleListFn()
@@ -311,6 +315,15 @@ export default {
       // artId => 文章 id
       const { data: res } = await getArtDetailAPI(artId)
       this.artDetail = res.data
+    },
+
+    // 删除文章 => 按钮点击事件
+    async removeFn (artId) {
+      const { data: res } = await delArticleAPI(artId)
+      if (res.code !== 0) return this.$message.error(res.message)
+      this.$message.success(/* res.message */'删除文章成功')
+      // 把分页和删选的条件重置
+      this.getArticleListFn()
     }
   }
 }
