@@ -322,8 +322,19 @@ export default {
       const { data: res } = await delArticleAPI(artId)
       if (res.code !== 0) return this.$message.error(res.message)
       this.$message.success(/* res.message */'删除文章成功')
+
+      // 问题 : 在最后一页 删除最后一条数据时, 虽然页码能回到上一页, 但是数据没有出现
+      // 原因: 发现 network 中参数 q.pangnum 的值不会自己回到上一页, 因为代码中没有修改 q.pangnum
+      // 用 getArticleListFn 方法 带着之前的参数去请求 所以没有数据
+      // 解决: 在调用接口之后, 刷新列表之前, 对页码做一下处理
+      if (this.artList.length === 1) {
+        if (this.q.pagenum > 1) {
+          this.q.pagesize--
+        }
+      }
       // 把分页和删选的条件重置
       this.getArticleListFn()
+
     }
   }
 }
